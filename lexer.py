@@ -14,9 +14,9 @@ TOKEN_STYLE = [
     'KEY_WORDS',
     'OPERATOR',
     'SEPARATOR',
-    'num',      #整数
-    'num',    #浮点数
-    'id',      #标识符
+    'INT',      #整数
+    'FLOAT',    #浮点数
+    'ID',      #标识符
 
     'DIGIT_CONSTANT',  
     'STRING_CONSTANT',
@@ -84,7 +84,7 @@ keywords = ( 'int' ,'float','for','if','else','while','void','struct', 'typedef'
     #     'int' ,'long', 'register' ,'return', 'short', 'signed','sizeof','static',
        #  'struct','switch','typedef','union','unsigned','void','volatile','while')
 #运算符        
-operaters = ('=', '&','&&','||', '<', '>', '++', '--', '+', '-', '*', '/', '>=', '<=', '!=')
+operaters = ('=', '&','&&','||', '<', '>', '++', '--', '+', '-', '*', '/', '>=', '<=', '!=','|')
 
 # 分隔符
 delimiters = ('(', ')', '{', '}', '[', ']', ',', '\"', ';')
@@ -113,6 +113,7 @@ class Lexer(object):
     NOERROR = True    
     def __init__(self):
         self.tokens = []
+        self.no_error =True
 
     #判断空字符
     def isblanki(self,index):       
@@ -226,6 +227,7 @@ class Lexer(object):
                             #错误处理1
                             NOERROR = False
                             print("<Error type A at line %s :  '%s'   INT_UNDEFINED reason:不合法的十六进制 如：0xx63,0x5gf >"%(line,num))
+                            self.no_error = False
                             #break
 
                     #8进制        
@@ -236,12 +238,14 @@ class Lexer(object):
                         num = self.change8(num)
                         if num == False:
                             NOERROR = False
-                            print("<Error type A at line %s :  '%s'   INT_UNDEFINED reason:不合法的八进制数，如: 0936 >"%(line,num))                        
+                            print("<Error type A at line %s :  '%s'   INT_UNDEFINED reason:不合法的八进制数，如: 0936 >"%(line,num)) 
+                            self.no_error = False                       
                         self.tokens.append(Token(line,3,num))
                         if content[i].isalpha():
                             #错误处理1
                             NOERROR = False
                             print("<Error type A at line %s :  '%s'   INT_UNDEFINED reason:不合法的八进制数，如: 0936s>"%(line,num))
+                            self.no_error = False
                             #break
 
                     #以0.开头,一定是浮点数
@@ -254,6 +258,7 @@ class Lexer(object):
                         if not content[i].isdigit():                            
                             NOERROR = False
                             print("Error type A at line %s :  '%s'   eg.'0.a'"%(line,num)) 
+                            self.no_error = False
                             #break
                         haveE = False
                         havePL = False
@@ -297,10 +302,12 @@ class Lexer(object):
                             else:
                                 NOERROR = False
                                 print("<Error type A at line %s :  '%s'   FLOAT_UNDEFINED>"%(line,num))
+                                self.no_error = False
                                 #break
                         elif haveMI or havePL:#不含e浮点数，如0.256  ps:暂时不考虑 0.3-5 这种形式
                             NOERROR = False
                             print("<Error type A at line %s :  '%s'   FLOAT_UNDEFINED>"%(line,num))
+                            self.no_error = False
                             #break
                         else:
                             print("pass")
@@ -316,6 +323,7 @@ class Lexer(object):
                         #错误处理2
                         NOERROR = False
                         print("<Error type A at line %s :  '%s'   NUM_UNDEFINED reason:数字之后不是空格、分隔符、运算符>"%(line,num))
+                        self.no_error = False
                         i+=1
                     else:
                         #整数0
@@ -344,6 +352,8 @@ class Lexer(object):
                             if ele in ('e','-','='):
                                 NOERROR = False
                                 print("<Error type A at line %s :  '%s'   INT_UNDEFINE reason: '2e6' or '2-6' >"%(line,num))
+
+                                self.no_error = False
 
                         
                         self.tokens.append(Token(line,3,num))                        
@@ -385,10 +395,12 @@ class Lexer(object):
                             else:
                                 NOERROR = False
                                 print("<Error type A at line %s :  '%s'   FLOAT_UNDEFINED>"%(line,num))
+                                self.no_error = False
                                 #break
                         elif haveMI or havePL:#不含e浮点数，如2.256  ps:暂时不考虑 2.3-5 这种形式
                             NOERROR = False
                             print("<Error type A at line %s :  '%s'   FLOAT_UNDEFINED>"%(line,num))
+                            self.no_error = False
                             #break
                         else:
                             print("pass")
@@ -402,6 +414,7 @@ class Lexer(object):
                                             
                         NOERROR = False
                         print("<Error type A at line %s :  '%s'   NUM_UNDEFINED reason:数字之后不是空格、分隔符、运算符>"%(line,num))
+                        self.no_error = False
                         i+=1
 
                         ####################################
@@ -425,7 +438,7 @@ class Lexer(object):
                         line += 1
                         
                     elif i+1<len(content) and content[i] + content[i+1] == '/*':
-                        print(i)
+                     
                         i += 1 
                         comment = False                 
                         #处理注释/* */
@@ -438,6 +451,7 @@ class Lexer(object):
                                 NOERROR = False
                                 print(i,"hhh",content[i] + content[i+1])
                                 print("<Error type A at line %s :    COMMENT_UNDEFINED reason:/*  */ 不允许嵌套>"%(line))
+                                self.no_error = False
                                 i+=1
                                 #break                        
                             if templine == line:
@@ -446,11 +460,13 @@ class Lexer(object):
                             comment = True
                         i += 2
                         if comment:
-                            print("已过滤注释'/**/'",line)
+                            pass
+                            #print("已过滤注释'/**/'",line)
 
                         else:
                             NOERROR = False
                             print("<Error type A at line %s :   COMMENT_UNDEFINED reason: 缺少 */ >"%(line))
+                            self.no_error = False
                         continue                    
                     else:                       
                         self.tokens.append(Token(line,1,content[i]))
@@ -484,13 +500,31 @@ class Lexer(object):
                     i,line = self.skip(i,line)
                 elif i<len(content) and content[i] in ['>','<','=','!']:
                     op = content[i]
-
                     i += 1                    
                     if content[i] == '=':
                         op += content[i]
                         i += 1
                         
                     self.tokens.append(Token(line,1,op))
+                    i,line = self.skip(i,line)
+                elif i<len(content) and content[i] == '&':
+
+                    if content[i + 1] == '&':
+                        self.tokens.append(Token(line,1,'&&'))
+                        i += 2
+                    else:
+                        self.tokens.append(Token(line,1,'&'))
+                        i += 1
+                    i,line = self.skip(i,line)
+                elif i<len(content) and content[i] == '|':
+
+                    if content[i + 1] == '|':
+                        self.tokens.append(Token(line,1,'||'))
+                        i += 2
+                    else:   
+                        print("<Error type A at line %s :  '%s'   UNKNOWEN_CHARACTER reason: 未知字符 >"%(line,content[i]))
+                        self.no_error = False                     
+                        i += 1
                     i,line = self.skip(i,line)
 
 
@@ -514,8 +548,12 @@ class Lexer(object):
                 if i<len(content):
                     NOERROR = False 
                     print("<Error type A at line %s :  '%s'   UNKNOWEN_CHARACTER reason: 未知字符 >"%(line,content[i]))
+                    self.no_error = False
                 i+=1
-                
+
+
+        if not self.no_error:
+            print("词法分析: 词法有错误")     
 
             
 

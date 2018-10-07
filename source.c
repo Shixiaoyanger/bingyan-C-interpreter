@@ -1,14 +1,53 @@
-
-
-int gcd(int u, int v) {
-    if (v = 0) {
-        return u;
-    } else {
-        return gcd(v, u-u/v*v);
-    }
+//成功
+int func_A1()
+ {
+ int _3_test;
+ float _wrong;
+ int a = 3;
 
 }
 
+//成功
+
+ int sub()
+ {
+int a,b,c;
+ c = 2;
+ a = b / c + 3 * a + 12;
+c = a + b * a + 4;
+ b = a && c;
+ c = a / b;
+ return b;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+int gcd(int u, int v) {
+    
+        int a ;
+        int b ;
+        int c;
+        float a = 3.3;
+ 
+
+}
+*/
 
 
 
