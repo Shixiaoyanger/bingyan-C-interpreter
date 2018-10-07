@@ -200,10 +200,15 @@ class Lexer(object):
                 if self.iskey(temp):                    
                     self.tokens.append(Token(line,0,temp))
 
+
                 #5,标识符    
                 else:                    
                     self.tokens.append(Token(line,5,temp))
-   
+                if i<len(content) and content[i] == '.':
+                    self.tokens.append(Token(line,1,content[i])) 
+                    i += 1
+                else:
+                    pass
 
               # #   .25E256  
 
@@ -310,7 +315,7 @@ class Lexer(object):
                             self.no_error = False
                             #break
                         else:
-                            print("pass")
+                            
                             pass
                             
                         
@@ -403,7 +408,7 @@ class Lexer(object):
                             self.no_error = False
                             #break
                         else:
-                            print("pass")
+                          
                             pass
                         
                     

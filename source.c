@@ -19,9 +19,50 @@ c = a + b * a + 4;
  c = a / b;
  return b;
 }
+//语法分析成功
+struct Product {
+    int name;
+    float price;
+};
+
+int main(){
+    struct Product burger, fries;
+    burger.name = 1;
+    fries.price = 1.3;
+    n = burger.name -1;
+    return 0;
+}
+//例2
+int compare(int a, int b) {
+    if(a == b)
+        {return 0;}
+    if(a < b)
+        {return 1;}
+    if(a > b)
+        {return 1;}
+}
+
+int main(){
+    int x,y,z;
+    x = 1;
+    y = 2;
+    z = 3;
+    compare(x,y);
+    campare(y,z);
+    return z;
+}
 
 
 
+int Array_Def()
+{
+    int i, j;
+    j = 5;
+    i = 0;
+    while (i < j) {
+        i = i + 1;
+     }
+}
 
 
 

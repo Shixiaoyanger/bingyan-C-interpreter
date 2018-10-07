@@ -356,24 +356,18 @@ class Stack(object):
     def pop(self):
         top = self.top() #记录栈顶元素，并返回
         self.container.pop()
+        print(top.type)
         return top
 
 
 class parser(object):
-    def check(self):
-        
-        print(self.tokens)
+
     '''
     语法分析器
     '''
 
     def __init__(self,tokens):
 
-
-
-        ###for i in range (0,len(tokens)):  
-
-            ###print(tokens[i].type,tokens[i].value ,tokens[i].line)
         self.tokens = tokens
         #存储词法分析结果
         self.token_terminal = list()
@@ -447,7 +441,7 @@ class parser(object):
             return True
 
 
-        x = self.get_nts_index()
+
    
 
 
