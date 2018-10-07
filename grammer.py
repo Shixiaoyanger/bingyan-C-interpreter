@@ -58,7 +58,7 @@ productions = [
         Production('var-define', ['SEMI']),
         Production('var-define', ['LB','num','RB','SEMI']),
         #5
-        Production('func-define', ['LP','params','RP','code-block']),
+        Production('func-define', ['LP','params','RP','LC','code-block','RC']),
         #6
         Production('params', ['param-list']),
         Production('params', []),
@@ -75,6 +75,7 @@ productions = [
         Production('array', []),
         #11
         Production('code-block', ['LC','in-define-list','code-list','RC']),
+        Production('code-block', ['in-define-list','code-list']),
         #12
         Production('in-define-list', ['in-var-define','in-define-list']),
         Production('in-define-list', []),
@@ -132,6 +133,8 @@ productions = [
         Production('expression', ['add-exp','expression-follow']),
         #30
         Production('expression-follow', ['RELOP','add-exp']),
+        Production('expression-follow', ['AND','add-exp']),
+
         Production('expression-follow', ['EQUAL','add-exp']),
         #Production('expression-follow', ['add-exp']),
         Production('expression-follow', []),
@@ -190,7 +193,8 @@ terminal_sign_type = [
     'STAR',
     'DIV',
     'EQUAL',
-    'RELOP',    
+    'RELOP',
+    'AND',    
     'SEMI',
     'COMMA',
     'LP',
