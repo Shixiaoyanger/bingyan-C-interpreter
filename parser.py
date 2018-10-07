@@ -287,7 +287,7 @@ class analysis_table(object):
             if same_left:   
                 same_right = True
                 if len(production.right) != len(self.table[x][y].right):
-                    print("非LL(1)语法",production.str)
+                    print("非LL(1)语法")
                     return False 
                 else:
                     for i in range(len(production.right)):
@@ -298,7 +298,7 @@ class analysis_table(object):
                         self.table[x].insert(y, production)
                         return True
                     else:
-                        print("非LL(1)语法1",production.str)
+                        print("非LL(1)语法1")
                         return False 
             else:
                 print("非LL(1)语法2")
@@ -367,14 +367,14 @@ class parser(object):
     语法分析器
     '''
 
-    def __init__(self):
+    def __init__(self,tokens):
 
-        lexer = Lexer()
-        lexer.main()
-        for i in range (0,len(lexer.tokens)):  
 
-            print(lexer.tokens[i].type,lexer.tokens[i].value ,lexer.tokens[i].line)
-        self.tokens = lexer.tokens
+
+        ###for i in range (0,len(tokens)):  
+
+            ###print(tokens[i].type,tokens[i].value ,tokens[i].line)
+        self.tokens = tokens
         #存储词法分析结果
         self.token_terminal = list()
         #存储带值的Sign对象
@@ -382,8 +382,8 @@ class parser(object):
             self.token_terminal.append(Sign(i.type,i.value,i.line))
             
         self.token_terminal.append(Sign('pound'))
-        for i in self.token_terminal:
-            print(i.type)#i.value,i.line)))
+        ###for i in self.token_terminal:
+           ### print(i.type)#i.value,i.line)))
 
 
     def sytax(self):
@@ -402,9 +402,9 @@ class parser(object):
             if stack.top().is_non_terminal_sign():
 
                 # 查看分析表
-                print(stack.top().type,self.token_terminal[index].type)
+                ###print("      查表",stack.top().type,self.token_terminal[index].type)
                 production = self.an_tables.get_production(stack.top(), self.token_terminal[index])
-                print(production)
+                #print(production)
                 # 如果分析表中有产生式
                 if production:
                     # 将 top 出栈
@@ -413,7 +413,7 @@ class parser(object):
                     # 反序入栈
                     for i in range(len(production.right) - 1,-1,-1):  
                         stack.push(production.right[i])
-                        print(production.right[i].type)
+                        ###print("      逆序压入",production.right[i].type)
                 # 如果分析表中存放着错误信息
                 else:
                     print("<Error type B at line %s :  '%s'  reason：语法错误1 >"%(self.token_terminal[index].line,self.token_terminal[index].value))
@@ -422,12 +422,12 @@ class parser(object):
             # 如果 top 是终结符
             else:
                 # 如果 top = input
-
+                ###print(stack.top().type,"终结符",self.token_terminal[index].type) 
                 if stack.top().type == self.token_terminal[index].type:
                     
                     # 如果 top = #，分析成功
                     if stack.top().type == 'pound':
-                        print("chenggongLLLLLLLLLLLLLLLLLLLLLL")
+                        print("语法分析成功")
                         flag = False
                     # 如果 top != #
                     else:
@@ -446,6 +446,8 @@ class parser(object):
             return True
 
 
+        x = self.get_nts_index()
+   
 
 
 
@@ -462,28 +464,35 @@ class parser(object):
 
 
 
+lexer = Lexer()
+lexer.main()
 
-aaa = parser()
-#aaa.compile()
-aaa.sytax()
-#print(aaa.table)
+if  lexer.no_error:
+    print("词法分析成功")
+   
+    aaa = parser(lexer.tokens)
+    #aaa.compile()
+
+    aaa.sytax()
+    #print(aaa.table)
 
 
 '''
-
-
-            
-
-
-
-
-bbb= analysis_table()
-print(bbb.compile())
 print(bbb.table[0][2].right[0].type)
+bbb= analysis_table()
+bbb.compile()          
+x =bbb.get_nts_index(Sign('expression-follow'))
+for i in bbb.table[x]:
+    if i != None:
+        print(i.right)
+'''
+
+
+
+
         
 
 
 
 
 
-'''

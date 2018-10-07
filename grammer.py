@@ -67,6 +67,7 @@ productions = [
         #8
         Production('param-follow', ['COMMA','param','param-follow']),
         Production('param-follow', []),
+        Production('param-follow', ['SEMI']),
         #9
         Production('param', ['TYPE','ID','array']),
         #10
@@ -78,8 +79,13 @@ productions = [
         Production('in-define-list', ['in-var-define','in-define-list']),
         Production('in-define-list', []),
         #13
-        Production('in-var-define', ['TYPE','ID','var-define']),
+        Production('in-var-define', ['TYPE','ID','in-var-define-follow']),
         Production('type', ['TYPE']),
+        Production('in-var-define-follow', ['EQUAL','expression','SEMI']),
+
+        Production('in-var-define-follow', ['SEMI']),
+        Production('in-var-define-follow', ['COMMA','ID','in-var-define-follow']),
+
         #14
         Production('code-list', ['code','code-list']),
         Production('code-list', []),
@@ -121,10 +127,14 @@ productions = [
         #28
         Production('return-follow', ['SEMI']),
         Production('return-follow', ['expression','SEMI']),
+
         #29
         Production('expression', ['add-exp','expression-follow']),
         #30
         Production('expression-follow', ['RELOP','add-exp']),
+        Production('expression-follow', ['EQUAL','add-exp']),
+        #Production('expression-follow', ['add-exp']),
+        Production('expression-follow', []),
         #31
         Production('add-exp', ['term','add-exp-follow']),
         #32
@@ -151,6 +161,7 @@ productions = [
         #39
         Production('id-factor-follow', ['var-follow']),
         Production('id-factor-follow', ['LP','args','RP']),
+        
         #40
         Production('args', ['arg-list']),
         Production('args', []),
@@ -213,6 +224,7 @@ non_terminal_sign_type = [
     'code-block',
     'in-define-list',
     'in-var-define',
+    'in-var-define-follow',
     'code-list',
     'code',
     'normal-statement',
