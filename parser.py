@@ -416,7 +416,7 @@ class parser(object):
                         print(production.right[i].type)
                 # 如果分析表中存放着错误信息
                 else:
-                    print('语法错误 1' + self.token_terminal[input_index].str, self.token_terminal[input_index].line)
+                    print('语法错误 1' + self.token_terminal[input_index].value, self.token_terminal[input_index].line)
                     break
             # 如果 top 是终结符
             else:
