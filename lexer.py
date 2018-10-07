@@ -18,50 +18,19 @@ TOKEN_STYLE = [
     'num',    #浮点数
     'id',      #标识符
 
-    'DIGIT_CONSTANT',  #？？？？？？？？？？？？？？？？？
+    'DIGIT_CONSTANT',  
     'STRING_CONSTANT',
     'CHAR_CONSTANT'
 ]
 
 
-# 所有终结符的类型
-terminal_sign_type = {
-    'else':'else',
-    'if':'if',
-    'int':'int',
-    'return':'return',
-    'void':'void',
-    'while':'while',
-    '+':'addition',
-    '-':'subtraction',
-    '*':'multiplication',
-    '/':'division',
-    '>':'bigger',
-    '>=':'bigger-equal',
-    '<':'smaller',
-    '<=':'smaller-equal',
-    '=':'equal',
-    '!=':'not-equal',
-    '==':'evaluate',
-    ';':'semicolon',
-    ',':'comma',
-    '(':'left-parentheses',
-    ')':'right-parentheses',
-    '[':'left-bracket',
-    ']':'right-bracket',
-    '{':'left-brace',
-    '}':'right-brace'
 
-    # 在这之前添加非终结符类型，请务必不要动 'pound'
-  
-}
 
 
 DETAIL_TOKEN = {
     '1':'INT',
     '2': 'FLOAT',
-    '3 ':'ID',        #标识符???
-
+    '3 ':'ID',        #标识符
     #类型
     'int':'TYPE',
     'float':'TYPE',
@@ -98,6 +67,7 @@ DETAIL_TOKEN = {
     'if':'IF',
     'else':'ELSE',
     'while':'WHILE',
+    'void':'VOID',
 
     #add
     '++':'DOPLUS',
@@ -130,7 +100,7 @@ class Token(object):
     #token 生成
     def __init__(self,line,type,value):
         if type in [0,1,2]:
-            self.type = terminal_sign_type[value]
+            self.type = DETAIL_TOKEN[value]
         else:
             self.type = TOKEN_STYLE[type]
 
@@ -233,7 +203,7 @@ class Lexer(object):
                 else:                    
                     self.tokens.append(Token(line,5,temp))
    
-              #########################################################################
+
               # #   .25E256  
 
             #以数字开头  
@@ -455,6 +425,7 @@ class Lexer(object):
                         line += 1
                         
                     elif i+1<len(content) and content[i] + content[i+1] == '/*':
+                        print(i)
                         i += 1 
                         comment = False                 
                         #处理注释/* */
@@ -465,7 +436,9 @@ class Lexer(object):
                             i,line = self.skip(i,line)
                             if content[i] + content[i+1] == '/*':
                                 NOERROR = False
-                                print("<Error type A at line %s :   COMMENT_UNDEFINED reason:/*  */ 不允许嵌套>"%(line))
+                                print(i,"hhh",content[i] + content[i+1])
+                                print("<Error type A at line %s :    COMMENT_UNDEFINED reason:/*  */ 不允许嵌套>"%(line))
+                                i+=1
                                 #break                        
                             if templine == line:
                                 i += 1
@@ -477,7 +450,7 @@ class Lexer(object):
 
                         else:
                             NOERROR = False
-                            print("<Error type A at line %s :  '%s'   COMMENT_UNDEFINED reason: 缺少 */ >"%(line,num))
+                            print("<Error type A at line %s :   COMMENT_UNDEFINED reason: 缺少 */ >"%(line))
                         continue                    
                     else:                       
                         self.tokens.append(Token(line,1,content[i]))
