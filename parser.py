@@ -371,14 +371,19 @@ class parser(object):
 
         lexer = Lexer()
         lexer.main()
+        for i in range (0,len(lexer.tokens)):  
+
+            print(lexer.tokens[i].type,lexer.tokens[i].value ,lexer.tokens[i].line)
         self.tokens = lexer.tokens
         #存储词法分析结果
         self.token_terminal = list()
         #存储带值的Sign对象
         for  i in self.tokens:
             self.token_terminal.append(Sign(i.type,i.value,i.line))
+            
         self.token_terminal.append(Sign('pound'))
-        self.index = 0
+        for i in self.token_terminal:
+            print(i.type)#i.value,i.line)))
 
 
     def sytax(self):
@@ -387,42 +392,38 @@ class parser(object):
         stack = Stack()
 
         stack.push(Sign('pound'))
-        input_index = 0
+        index = 0
         flag = True
         error=False
         stack.push(Sign('program'))
-        #print(stack.top().type,self.token_terminal[input_index].type)
+        #print(stack.top().type,self.token_terminal[index].type)
         while flag:
             #print("stack           ",len(stack.container))
-
-
             if stack.top().is_non_terminal_sign():
 
                 # 查看分析表
-                #print(stack.top().type,)
-                production = self.an_tables.get_production(stack.top(), self.token_terminal[input_index])
-                #print(production)
+                print(stack.top().type,self.token_terminal[index].type)
+                production = self.an_tables.get_production(stack.top(), self.token_terminal[index])
+                print(production)
                 # 如果分析表中有产生式
                 if production:
-
-
                     # 将 top 出栈
                     top = stack.pop()
                     #print(top)
-
                     # 反序入栈
                     for i in range(len(production.right) - 1,-1,-1):  
                         stack.push(production.right[i])
                         print(production.right[i].type)
                 # 如果分析表中存放着错误信息
                 else:
-                    print('语法错误 1' + self.token_terminal[input_index].value, self.token_terminal[input_index].line)
+                    print("<Error type B at line %s :  '%s'  reason：语法错误1 >"%(self.token_terminal[index].line,self.token_terminal[index].value))
+
                     break
             # 如果 top 是终结符
             else:
                 # 如果 top = input
-                #print(input_index)
-                if stack.top().type == self.token_terminal[input_index].type:
+
+                if stack.top().type == self.token_terminal[index].type:
                     
                     # 如果 top = #，分析成功
                     if stack.top().type == 'pound':
@@ -432,17 +433,16 @@ class parser(object):
                     else:
 
                         stack.pop()
-                        input_index += 1
+                        index += 1
                 # 如果 top != input
                 else:
-                    print('语法错误 2' + self.token_terminal[input_index].str, self.token_terminal[input_index].line)
+                    print("<Error type B at line %s :  '%s' reason：语法错误2 >"%(self.token_terminal[index].line,self.token_terminal[index].value))
                     error = True
                     break
 
         if error:
             return False
         else:
-
             return True
 
 
