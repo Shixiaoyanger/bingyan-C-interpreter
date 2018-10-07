@@ -51,14 +51,20 @@ productions = [
         Production('define-list', []),
         #2
         Production('define', ['TYPE','ID','definetype']),
+        Production('define', ['STRUCT','id','struct-define']),
+
+        Production('id', ['ID']),
+        Production('id', []),
         #3
         Production('definetype', ['var-define']),
         Production('definetype', ['func-define']),
+        
         #4
         Production('var-define', ['SEMI']),
         Production('var-define', ['LB','num','RB','SEMI']),
         #5
         Production('func-define', ['LP','params','RP','LC','code-block','RC']),
+        Production('struct-define', ['LC','code-block','RC','SEMI']),
         #6
         Production('params', ['param-list']),
         Production('params', []),
@@ -77,10 +83,12 @@ productions = [
         Production('code-block', ['LC','in-define-list','code-list','RC']),
         Production('code-block', ['in-define-list','code-list']),
         #12
-        Production('in-define-list', ['in-var-define','in-define-list']),
+        Production('in-define-list', ['in-var-define','in-define-list',]),
+        Production('in-define-list', ['in-struct-define','in-define-list',]),
         Production('in-define-list', []),
         #13
         Production('in-var-define', ['TYPE','ID','in-var-define-follow']),
+        Production('in-struct-define', ['STRUCT','ID','id','in-var-define-follow']),
         Production('type', ['TYPE']),
         Production('in-var-define-follow', ['EQUAL','expression','SEMI']),
 
@@ -99,10 +107,12 @@ productions = [
         Production('normal-statement', ['SEMI']),
         Production('normal-statement', ['ID','normal-statement-follow']),
         #17
-        Production('normal-statement-follow', ['var-follow','EQUAL','expression','SEMI']),
+        Production('normal-statement-follow', ['var-follow','dot','EQUAL','expression','SEMI']),
+        
         Production('normal-statement-follow', ['call-follow','SEMI']),
         #18
         Production('var-follow', ['LB','expression','RB']),
+        
         Production('var-follow', []),
         #19
         Production('call-follow', ['LP','call-params','RP']),
@@ -118,10 +128,11 @@ productions = [
         #24
         Production('if-follow', ['ELSE','LC','code-list','RC']),#if else 语句都要加{}
         Production('if-follow', []),
+
         #25
-        Production('while-statement', ['WHILE','LC','expression','RC','while-follow']),
+        Production('while-statement', ['WHILE','LP','expression','RP','while-follow']),
         #26
-        Production('while-follow', ['LP','code-list','RP']),
+        Production('while-follow', ['LC','code-list','RC']),
         Production('while-follow', ['code']),
         #27
         Production('return-statement', ['RETURN','return-follow']),
@@ -156,7 +167,10 @@ productions = [
         Production('mul-op', ['DIV']),
         #37
         Production('factor', ['LP','expression','RP']),
-        Production('factor', ['ID','id-factor-follow']),
+        Production('factor', ['ID','dot','id-factor-follow']),
+        Production('dot', ['DOT','ID']),
+        Production('dot', []),
+        
         Production('factor', ['num']),
         #38
         Production('num', ['INT']),
@@ -194,7 +208,8 @@ terminal_sign_type = [
     'DIV',
     'EQUAL',
     'RELOP',
-    'AND',    
+    'AND', 
+    'DOT',   
     'SEMI',
     'COMMA',
     'LP',
@@ -218,8 +233,12 @@ non_terminal_sign_type = [
     'define',
     'definetype',
     'var-define',
+    'specifier',
     'type',
+    'id',
+    'dot',
     'func-define',
+    'struct-define',
     'params',
     'param-list',
     'param-follow',
@@ -228,6 +247,7 @@ non_terminal_sign_type = [
     'code-block',
     'in-define-list',
     'in-var-define',
+    'in-struct-define',
     'in-var-define-follow',
     'code-list',
     'code',
@@ -265,41 +285,6 @@ if __name__ =="__main__":
     m = 0
     for production in productions:
         for i in range(len(production.right)):
-            print(production.right[i].is_non_terminal_sign() or production.right[i].is_terminal_sign())
+            if not (production.right[i].is_non_terminal_sign() or production.right[i].is_terminal_sign()):
+                print( production.right[i].type)
 
-
-'''
-# 所有终结符的类型
-terminal_sign_type = {
-    'else':'else',
-    'if':'if',
-    'int':'int',
-    'return':'return',
-    'void':'void',
-    'while':'while',
-    '+':'addition',
-    '-':'subtraction',
-    '*':'multiplication',
-    '/':'division',
-    '>':'bigger',
-    '>=':'bigger-equal',
-    '<':'smaller',
-    '<=':'smaller-equal',
-    '==':'equal',
-    '!=':'not-equal',
-    '=':'evaluate',
-    ';':'semicolon',
-    ',':'comma',
-    '(':'left-parentheses',
-    ')':'right-parentheses',
-    '[':'left-bracket',
-    ']':'right-bracket',
-    '{':'left-brace',
-    '}':'right-brace'
-
-'
-  
-}
-'''
-        
-        
