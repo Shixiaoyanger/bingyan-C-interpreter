@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from lexer import *
-from rules import *
+from grammer import *
 
 class analysis_table(object):
     
