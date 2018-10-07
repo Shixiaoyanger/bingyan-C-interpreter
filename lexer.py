@@ -460,7 +460,8 @@ class Lexer(object):
                             comment = True
                         i += 2
                         if comment:
-                            print("已过滤注释'/**/'",line)
+                            pass
+                            #print("已过滤注释'/**/'",line)
 
                         else:
                             NOERROR = False
@@ -549,7 +550,10 @@ class Lexer(object):
                     print("<Error type A at line %s :  '%s'   UNKNOWEN_CHARACTER reason: 未知字符 >"%(line,content[i]))
                     self.no_error = False
                 i+=1
-                
+
+
+        if not self.no_error:
+            print("词法分析: 词法有错误")     
 
             
 

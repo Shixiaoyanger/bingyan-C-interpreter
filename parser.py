@@ -417,7 +417,7 @@ class parser(object):
                 # 如果分析表中存放着错误信息
                 else:
                     print("<Error type B at line %s :  '%s'  reason：语法错误1 >"%(self.token_terminal[index].line,self.token_terminal[index].value))
-
+                    error = True
                     break
             # 如果 top 是终结符
             else:
@@ -440,7 +440,8 @@ class parser(object):
                     error = True
                     break
 
-        if error:
+        if  error:
+            print("语法分析： 语法有错误")
             return False
         else:
             return True
